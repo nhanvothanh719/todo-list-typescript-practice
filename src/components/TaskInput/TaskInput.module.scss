@@ -1,0 +1,29 @@
+.inputSection {
+  margin-bottom: 1rem;
+
+  form {
+    width: 100%;
+    display: flex;
+
+    input {
+      height: 4rem;
+      flex-grow: 1;
+      margin-right: 1rem;
+      border-radius: 0.7rem;
+      padding: 0 1rem;
+      border-width: 1px;
+    }
+
+    button {
+      width: 5rem;
+      height: 4rem;
+      border-radius: 0.7rem;
+      border-width: 1px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0 1rem;
+      font-size: var(--font-size);
+    }
+  }
+}

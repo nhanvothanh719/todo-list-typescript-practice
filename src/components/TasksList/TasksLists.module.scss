@@ -1,0 +1,35 @@
+.tasks {
+  list-style: none;
+  margin: unset;
+  padding: unset;
+
+  &Category {
+    margin-block: 2rem;
+  }
+
+  .task {
+    &:not(:last-child) {
+      margin-bottom: 1rem;
+    }
+
+    font-size: 2rem;
+    display: flex;
+
+    input {
+      flex: 0 0 15%;
+    }
+    span {
+      flex: 0 0 65%;
+    }
+
+    &Actions {
+      flex: 0 0 20%;
+      display: flex;
+
+      button {
+        flex: 0 0 50%;
+        padding-block: 0.3rem;
+      }
+    }
+  }
+}
