@@ -5,10 +5,12 @@ interface TasksListProps {
   isDoneTasksList: boolean
   tasksList: Task[]
   changeTaskStatus: (id: string, isDone: boolean) => void
+  selectTask: (id: string) => void
+  deleteTask: (id: string) => void
 }
 
 const TasksList = (props: TasksListProps) => {
-  const { isDoneTasksList, tasksList, changeTaskStatus } = props
+  const { isDoneTasksList, tasksList, changeTaskStatus, selectTask, deleteTask } = props
 
   const handleChangeStatus = (id: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
     changeTaskStatus(id, e.target.checked)
@@ -25,10 +27,10 @@ const TasksList = (props: TasksListProps) => {
               {task.name}
             </span>
             <div className={styles.taskActions}>
-              <button>
+              <button onClick={() => selectTask(task.id)}>
                 <i className='fa fa-pencil-square-o' aria-hidden='true'></i>
               </button>
-              <button>
+              <button onClick={() => deleteTask(task.id)}>
                 <i className='fa fa-trash-o' aria-hidden='true'></i>
               </button>
             </div>

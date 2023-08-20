@@ -1,31 +1,44 @@
 import { useState } from 'react'
 import styles from './TaskInput.module.scss'
+import { Task } from '../../@types/task.type'
 
 interface TaskInputProps {
   addTask: (name: string) => void
+  currentTask: Task | null
+  editTask: (name: string) => void
+  saveUpdatedTask: () => void
 }
 
 const TaskInput = (props: TaskInputProps) => {
-  const { addTask } = props
+  const { addTask, currentTask, editTask, saveUpdatedTask } = props
 
   const [taskName, setTaskName] = useState<string>('')
 
   const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTaskName(e.target.value)
+    const value = e.target.value
+
+    if (currentTask) {
+      editTask(value)
+    } else {
+      setTaskName(value)
+    }
   }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    addTask(taskName)
-
-    setTaskName('')
+    if (currentTask) {
+      saveUpdatedTask()
+    } else {
+      addTask(taskName)
+      setTaskName('')
+    }
   }
 
   return (
     <div className={styles.inputSection}>
       <form onSubmit={handleSubmit}>
-        <input type='text' value={taskName} onChange={onChangeInput} />
+        <input type='text' value={currentTask ? currentTask.name : taskName} onChange={onChangeInput} />
         <button type='submit'>
           <i className='fa fa-plus-circle' aria-hidden='true'></i>
         </button>
