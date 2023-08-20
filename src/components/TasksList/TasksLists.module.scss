@@ -8,6 +8,7 @@
   }
 
   .task {
+
     &:not(:last-child) {
       margin-bottom: 1rem;
     }
@@ -18,8 +19,14 @@
     input {
       flex: 0 0 15%;
     }
-    span {
+
+    &Name {
       flex: 0 0 65%;
+    }
+
+    &Completed {
+      text-decoration: line-through;
+      color: #bdbaba;
     }
 
     &Actions {

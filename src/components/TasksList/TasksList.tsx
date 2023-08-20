@@ -1,13 +1,21 @@
 import styles from './TasksLists.module.scss'
 
-const TasksList = () => {
+interface TasksListProps {
+  isDoneTasksList: boolean
+}
+
+const TasksList = (props: TasksListProps) => {
+  const { isDoneTasksList } = props
+
   return (
     <>
-      <h2 className={styles.tasksCategory}>Tasks List</h2>
+      <h2 className={styles.tasksCategory}>{isDoneTasksList ? 'Completed' : 'Not Completed'}</h2>
       <ul className={styles.tasks}>
         <li className={styles.task}>
           <input type='checkbox' />
-          <span>Task 1</span>
+          <span className={isDoneTasksList ? `${styles.taskName} ${styles.taskCompleted}` : `${styles.taskName}`}>
+            Task 1
+          </span>
           <div className={styles.taskActions}>
             <button>
               <i className='fa fa-pencil-square-o' aria-hidden='true'></i>
@@ -19,7 +27,9 @@ const TasksList = () => {
         </li>
         <li className={styles.task}>
           <input type='checkbox' />
-          <span>Task 1</span>
+          <span className={isDoneTasksList ? `${styles.taskName} ${styles.taskCompleted}` : `${styles.taskName}`}>
+            Task 1
+          </span>
           <div className={styles.taskActions}>
             <button>
               <i className='fa fa-pencil-square-o' aria-hidden='true'></i>
