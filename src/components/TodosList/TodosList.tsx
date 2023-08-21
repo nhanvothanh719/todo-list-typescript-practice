@@ -1,8 +1,18 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import TaskInput from '../TaskInput'
 import TasksList from '../TasksList'
 import styles from './TodosList.module.scss'
 import { Task } from '../../@types/task.type'
+
+type HandleTasks = (tasks: Task[]) => Task[]
+
+const syncDataToLocalStorage = (handleLocalTasks: HandleTasks) => {
+  const savedTasksString = localStorage.getItem('tasks')
+  const savedTasks: Task[] = JSON.parse(savedTasksString || '[]')
+
+  const newTasksList = handleLocalTasks(savedTasks)
+  localStorage.setItem('tasks', JSON.stringify(newTasksList))
+}
 
 const TodosList = () => {
   const [tasksList, setTasksList] = useState<Task[]>([])
@@ -10,6 +20,12 @@ const TodosList = () => {
 
   const todoTasks = tasksList.filter((task) => task.isDone === false)
   const doneTasks = tasksList.filter((task) => task.isDone === true)
+
+  useEffect(() => {
+    const savedTasksString = localStorage.getItem('tasks')
+    const savedTasks = JSON.parse(savedTasksString || '[]')
+    setTasksList(savedTasks)
+  }, [])
 
   const addTask = (name: string) => {
     const task: Task = {
@@ -19,17 +35,22 @@ const TodosList = () => {
     }
 
     setTasksList((prevTasksList) => [...prevTasksList, task])
+
+    const addLocalTask: HandleTasks = (tasksList: Task[]) => [...tasksList, task]
+
+    syncDataToLocalStorage(addLocalTask)
   }
 
   const changeTasksStatus = (id: string, isDone: boolean) => {
-    setTasksList((prevTasksList) => {
-      return prevTasksList.map((task) => {
-        if (task.id === id) {
-          return { ...task, isDone }
-        }
+    const updateTaskStatus: HandleTasks = (tasks: Task[]) =>
+      [...tasks].map((task) => {
+        if (task.id === id) return { ...task, isDone }
         return task
       })
-    })
+
+    setTasksList((prevTasksList) => updateTaskStatus(prevTasksList))
+
+    syncDataToLocalStorage(updateTaskStatus)
   }
 
   const selectTask = (id: string) => {
@@ -45,28 +66,36 @@ const TodosList = () => {
   }
 
   const saveUpdatedTask = () => {
-    setTasksList((prevTasksList) => {
-      return prevTasksList.map((task) => {
+    const updateTask: HandleTasks = (tasks: Task[]) => {
+      return tasks.map((task) => {
         if (task.id === currentTask?.id) return currentTask
         return task
       })
-    })
+    }
+
+    setTasksList((prevTasksList) => updateTask(prevTasksList))
+
+    syncDataToLocalStorage(updateTask)
+
     setCurrentTask(null)
   }
 
   const deleteTask = (id: string) => {
     if (currentTask) setCurrentTask(null)
 
-    setTasksList((prevTasksList) => {
-      const taskIndex = prevTasksList.findIndex((task) => task.id === id)
+    const removeTask: HandleTasks = (tasks: Task[]) => {
+      const foundTaskIndex = tasks.findIndex((task) => task.id === id)
 
-      if (taskIndex > -1) {
-        const updatedTasksList = [...prevTasksList]
-        updatedTasksList.splice(taskIndex, 1)
+      if (foundTaskIndex > -1) {
+        const updatedTasksList = [...tasks]
+        updatedTasksList.splice(foundTaskIndex, 1)
         return updatedTasksList
       }
-      return prevTasksList
-    })
+      return tasks
+    }
+
+    setTasksList((prevTasksList) => removeTask(prevTasksList))
+    syncDataToLocalStorage(removeTask)
   }
 
   return (
